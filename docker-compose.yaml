@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  app:
+    build: ./python_server
+    ports:
+      - "8001:8001"
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prometheus.yaml:/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - "GF_SECURITY_ADMIN_USER=ecosia"
+      - "GF_SECURITY_ADMIN_PASSWORD=workshop"
+    volumes:
+      - "./grafana_datasources.yaml:/etc/grafana/provisioning/datasources/prometheus_docker-compose.yaml"
+
+
