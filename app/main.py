@@ -1,7 +1,9 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import requests
 import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from util import randomised_503
+
 
 HOST_NAME = '0.0.0.0' # This will map to avialable port in docker
 PORT_NUMBER = 8001
@@ -28,6 +30,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        if randomised_503(self): return
         endpoint = self.path
         if endpoint == '/treecounter':
             return self.get_treecounter()
