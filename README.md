@@ -93,3 +93,89 @@ Grafana uses authentication, which, for this workshop, is configured in the `doc
 username: ecosia
 password: workshop
 ```
+
+### Bonus Material: Histograms in Prometheus
+
+We have already exposed metrics of type `Counter`. [Prometheus has four core metrics](https://prometheus.io/docs/concepts/metric_types/), which are:
+
+ - Counter
+ - Gauge
+ - Histogram
+ - Summary
+
+A histogram is a little bit more complicated than a Counter, but it can be very useful!
+
+A histogram is useful when you want approximations over a known range of values, for example:
+* response duration
+* request size
+
+In Promtheus, a histogram measures the frequency of value observations that fall into `buckets`.
+For example, we can define a set of buckets to measure request latency. These buckets are groupings which we can use to provide an indication of how long
+a single request could take e.g. 0.0 - 0.25s, 0.25 - 0.50s, 0.50 - 0.75s, 0.75 - 1.00s, 1.00s+. The duration of every request will fall into one of these buckets.
+
+In Prometheus, a histogram is cumulative and there are default buckets defined, so you don't need to specify them for yourself.
+When using the histogram, Prometheus won't store the exact request duration, but instead stores the frequency of requests that fall into these buckets.
+
+**Let's make a histogram for request latencies**
+
+The first thing we will do is add the import:
+
+```
+  from prometheus_client import Histogram
+```
+
+Then define our histogram:
+
+```
+  requestHistogram = Histogram('request_latency_seconds', 'Request latency', ['endpoint'] )
+  requestHistogramTreeCounter = requestHistogram.labels(endpoint='/treecounter')
+```
+
+Finally we add the following decorator to the piece of code that we want to time:
+
+```
+  @requestHistogramTreeCounter.time()
+  def xxxx():
+      ...
+```
+
+Then run the application again and make a few requests. 👀
+
+#### How to interpret the histogram 
+
+If we curl the `/metrics` endpoint again, a portion of the output will look something like this:
+
+```
+request_latency_seconds_count{endpoint="/treecounter"} 5.0
+```
+
+This is a `count` again! And we can see the endpoint has received 5 requests. 
+
+We also see our buckets. Here `le` means `less than or equal to`.
+We can see from this output that the histogram is cumulative:
+
+```
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.005"} 1.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.01"} 1.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.025"} 1.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.05"} 1.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.075"} 1.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.1"} 1.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.25"} 4.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.5"} 4.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="0.75"} 5.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="1.0"} 5.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="2.5"} 5.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="5.0"} 5.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="7.5"} 5.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="10.0"} 5.0
+request_latency_seconds_bucket{endpoint="/treecounter",le="+Inf"} 5.0
+```
+
+Finally we see the total sum of all observed values:
+
+```
+request_latency_seconds_sum{endpoint="/treecounter"} 1.13912788000016
+```
+
+To learn more, you can read about [Prometheus Histogram best practices](https://prometheus.io/docs/practices/histograms/).
