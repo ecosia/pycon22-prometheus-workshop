@@ -3,7 +3,7 @@ import requests
 from string import Template
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from util import randomised_503
+from util import generate_5xx, artificial_latency
 
 
 HOST_NAME = '0.0.0.0' # This will map to avialable port in docker
@@ -22,6 +22,9 @@ def fetch_tree_count():
 
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
+
+    @artificial_latency
+    @generate_5xx
     def get_treecounter(self):
         self.do_HEAD()
         tree_count = fetch_tree_count()
@@ -34,7 +37,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        if randomised_503(self): return
         endpoint = self.path
         if endpoint == '/treecounter':
             return self.get_treecounter()
