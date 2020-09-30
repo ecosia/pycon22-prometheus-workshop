@@ -10,7 +10,7 @@ We will use the [Prometheus Python client library](https://github.com/prometheus
 
 ## Prerequisites
 
-For this workshop you will need [Pipenv](https://pipenv.pypa.io/en/latest/install/#installing-pipenv) and [Docker](https://docs.docker.com/get-docker/) running on your machine.
+For this workshop you will need [Python 3](https://installpython3.com/), [Pipenv](https://pipenv.pypa.io/en/latest/install/#installing-pipenv) and [Docker](https://docs.docker.com/get-docker/) running on your machine.
 
 ## Workshop Content
 
