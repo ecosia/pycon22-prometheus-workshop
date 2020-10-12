@@ -8,17 +8,28 @@ We will do this using the time-series database system [Prometheus](https://prome
 
 We will use the [Prometheus Python client library](https://github.com/prometheus/client_python) to track metrics in our code.
 
+## Agenda
+
+* [Section 1: Exposing metrics](#section-1:-exposing-metrics)
+* [Section 2: Creating custom metrics](#section-2:-creating-custom-metrics)
+* [Section 3: Scraping Metrics with Prometheus and creating Dashboards with Grafana](#section-3:-scraping-metrics-with-prometheus-and-creating-dashboards-with-grafana)
+* [Bonus Material: Histograms in Prometheus](#bonus-material:-histograms-in-prometheus)
+
 ## Prerequisites
 
 For this workshop you will need [Python 3](https://installpython3.com/), [Pipenv](https://pipenv.pypa.io/en/latest/install/#installing-pipenv) and [Docker](https://docs.docker.com/get-docker/) running on your machine.
 
 ## Workshop Content
 
+---
+
 ### Section 1: Exposing metrics
+
+---
 
 For this section, you can use `make dev` to install depencies and run the dev server.
 
-To export our metrics we will need to have a server with a handler to handle the metrics. We can do this by changing the base class of our HTTPRequestHandler to the `MetricsHandler` provided by the prometheus python client. We also need to add the condition for the `/metrics` endpoint below our `/treecounter` endpoint condition.
+To export our metrics we will need to have a server with a handler to handle the metrics. We can do this by changing the base class of our HTTPRequestHandler to the `MetricsHandler` provided by the prometheus python client. We also need to add the condition for the `/metrics` endpoint below our `/treecounter` endpoint condition. *(Don't forget to import the `MetricsHandler` from the `prometheus_client`)*
 
 ``` python
 class HTTPRequestHandler(MetricsHandler):
@@ -28,9 +39,13 @@ class HTTPRequestHandler(MetricsHandler):
         return super(HTTPRequestHandler, self).do_GET()
 ```
 
-Now try restart the server (`control c` will stop it) and go to `localhost:8001/metrics` what do you see? What do you see if you visit `localhost:8001/treecounter` a few times and then go back to the `/metrics` endpoint?
+Now try restart the server (`control c` will stop it) and go to `localhost:8001/metrics` what do you see? What do you see if you visit `localhost:8001/treecounter` a few times and then go back to the `/metrics` endpoint? What do you see? What do these base metrics represent?
+
+---
 
 ### Section 2: Creating custom metrics
+
+---
 
 Now we are able to expose metrics we need to be able to create them. Prometheus has a few different data types, but the simplest is a `Counter` - this is a counter which always goes up, and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instanstiate it.
 
@@ -41,7 +56,7 @@ requestCounter = Counter('requests_total', 'decription of counter', ['status', '
 
 Then, you should be able to see your metric exposed on `/metrics` - success! (Except, it will still always report 0 - not quite useful, yet)
 
-To use our metric in practice, we want to increment the counter when tracking events in our code. To increment the `Counter` type by one, we can simply call `.Inc()` - for example, using the request counter we created above, we could call:
+To use our metric in practice, we want to increment the counter when tracking events in our code. To increment the `Counter` type by one, we can simply call `.inc()` - for example, using the request counter we created above, we could call:
 
 ``` python
 requestCounter.labels(status='200', endpoint='/treecounter').inc()
@@ -51,13 +66,19 @@ requestCounter.labels(status='200', endpoint='/treecounter').inc()
 
 Try add a counter to the application, add the labels which you find significant and a suitable name and description. See if when you run the server you can find it at `/metrics`. You may also want to experiment with the placement of you `.inc()` call.
 
-### Section 3: Scraping Metrics with Prometheus
+---
+
+### Section 3: Scraping Metrics with Prometheus and creating Dashboards with Grafana
+
+---
 
 So far, we've been able to instrument our application, such that it is now exporting metrics about its runtime behaviour. However, we still need to collect those metrics and store the data in a way that we can query it back out, in order to graph it over time and make dashboards.
 
-There is a `prometheus.yaml` configuration file here in the repo, which is already set up to scrape metrics from our application. We can run both our application and Prometheus inside Docker, so that they are easily able to find each other.
+There is a `prometheus.yaml` configuration file here in the repo, which is already set up to scrape metrics from our application. We can run both our application, Prometheus, and Grafana inside Docker, so that they are easily able to find each other.
 
-To build the application Docker image, and start the application container and Prometheus together, run the following command (from the root of this repo):
+#### Run the application, Prometheus and Grafana in Docker
+
+To build the application Docker image, and start the application container, Prometheus and Grafana together, run the following command (from the root of this repo):
 
 ``` sh
 docker-compose up --build
@@ -65,9 +86,9 @@ docker-compose up --build
 
 You should then be able to access the Prometheus dashboard on `http://localhost:9090`
 
-Prometheus should find and immediately start scraping metrics from the application container. You can check that it's found the application container by looking at the list of "targets" that Prometheus is scraping `http://localhost:9090/targets`
+#### Navigating the Prometheus UI and using PromQL to query metrics
 
-### Section 4: Prometheus Queries
+Prometheus should find and immediately start scraping metrics from the application container. You can check that it's found the application container by looking at the list of "targets" that Prometheus is scraping `http://localhost:9090/targets`
 
 Prometheus using it's own query language called [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/). You can enter PromQL queries in the `/graph` page of the Prometheus UI.
 
@@ -83,9 +104,9 @@ If we want to see this graphed as a rate per-second over time, we use the query:
 rate(requests_total[1m])
 ```
 
-### Section 5: Making Dashboards with Grafana
+#### Making Dashboards with Grafana
 
-[Grafana](http://grafana.com) is an open-source metric visualisation tool, which can be used to create dashboards containing many graphs. Grafana can visualise data from multiple sources, including Prometheus. The `docker-compose` command used in the previous section will also start a Grafana container, which uses the Grafana configuration file in this repo to connect to Prometheus. After running the startup command (same as above, `docker-compose up --build`), you'll be able to find Grafana on `http://localhost:3000`
+[Grafana](http://grafana.com) is an open-source metric visualisation tool, which can be used to create dashboards containing many graphs. Grafana can visualise data from multiple sources, including Prometheus. The `docker-compose` command used in the previous section will also start a Grafana container, which uses the Grafana configuration file in this repo to connect to Prometheus. After running the startup command mentioned above, `docker-compose up --build`), you'll be able to find Grafana on `http://localhost:3000`
 
 Grafana uses authentication, which, for this workshop, is configured in the `docker-compose.yaml` file. The credentials configured for this workshop are:
 
@@ -94,7 +115,15 @@ username: ecosia
 password: workshop
 ```
 
+Time to get creative and visualise your metrics in a meaningful way so you can observe your application and even set up alerts for any behaviour you want to be informed about! We will show you in the workshop how to build a simple dashboard panel but there's lots to explore. Lots of useful information can be found on both the [Prometheus](https://prometheus.io) and [Grafana](http://grafana.com) websites.
+
+**Go forth and Monitor!!**
+
+---
+
 ### Bonus Material: Histograms in Prometheus
+
+---
 
 We have already exposed metrics of type `Counter`. [Prometheus has four core metrics](https://prometheus.io/docs/concepts/metric_types/), which are:
 
