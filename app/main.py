@@ -2,8 +2,9 @@ import json
 import requests
 from string import Template
 import time
+import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from util import generate_5xx, artificial_latency
+from util import artificial_503, artificial_latency
 
 
 HOST_NAME = '0.0.0.0' # This will map to avialable port in docker
@@ -14,17 +15,16 @@ with open('./templates/treeCounter.html', 'r') as f:
 html_template = Template(html_string)
 
 def fetch_tree_count():
-	r = requests.get(trees_api_url)
-	if r.status_code == 200:
-		return r.json()['count']
-	return 0
+       r = requests.get(trees_api_url) if random.random() > 0.15 else artificial_503()
+       if r.status_code == 200:
+               return r.json()['count']
+       return 0
 
 
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
 
     @artificial_latency
-    @generate_5xx
     def get_treecounter(self):
         self.do_HEAD()
         tree_count = fetch_tree_count()
