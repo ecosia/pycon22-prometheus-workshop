@@ -7,7 +7,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from util import artificial_503, artificial_latency
 
 
-HOST_NAME = '0.0.0.0' # This will map to avialable port in docker
+HOST_NAME = '0.0.0.0' # This will map to available port in docker
 PORT_NUMBER = 8001
 trees_api_url = "https://api.ecosia.org/v1/trees/count"
 with open('./templates/treeCounter.html', 'r') as f:
