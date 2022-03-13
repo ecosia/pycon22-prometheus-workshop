@@ -1,5 +1,5 @@
-install:
-	cd ./app && pipenv install
+deps:
+	poetry install
 
-dev: install
-	cd ./app && pipenv run python main.py
+dev: deps
+	cd app && poetry run python app/main.py
