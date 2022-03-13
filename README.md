@@ -2,7 +2,7 @@
 
 ## Objective
 
-In the directory `app/`, we have a simple Python application. We want to start observing the behaviour of this application at runtime, by tracking and exporting metric data.
+In the directory `app/`, we have a simple Python application. We want to start observing the behaviour of this application at runtime by tracking and exporting metric data.
 
 We will do this using the time-series database system [Prometheus](https://prometheus.io), which uses a "pull" method to extract data from running applications. This means that the applications need to "export" their data, so that Prometheus is able to "scrape" the metric data from them. This is typically done via an HTTP endpoint (`/metrics`, by convention).
 
@@ -27,9 +27,9 @@ For this workshop you will need [Python 3](https://installpython3.com/), [Pipenv
 
 ---
 
-For this section, you can use `make dev` to install depencies and run the dev server.
+To begin, use `make dev` to install the project depencies and run the development server.
 
-To export our metrics we will need to have a server with a handler to handle the metrics. We can do this by changing the base class of our HTTPRequestHandler to the `MetricsHandler` provided by the prometheus python client. We also need to add the condition for the `/metrics` endpoint below our `/treecounter` endpoint condition. *(Don't forget to import the `MetricsHandler` from the `prometheus_client`)*
+To export our metrics we will need to have a server with a handler to *handle* the metrics. We can do this by changing the base class of our HTTPRequestHandler to the `MetricsHandler` provided by the prometheus python client. We also need to add the condition for the `/metrics` endpoint below our `/treecounter` endpoint condition. *(Don't forget to import the `MetricsHandler` from the `prometheus_client`)*
 
 ``` python
 class HTTPRequestHandler(MetricsHandler):
@@ -39,7 +39,7 @@ class HTTPRequestHandler(MetricsHandler):
         return super(HTTPRequestHandler, self).do_GET()
 ```
 
-Now try restart the server (`control c` will stop it) and go to `localhost:8001/metrics` what do you see? What do you see if you visit `localhost:8001/treecounter` a few times and then go back to the `/metrics` endpoint? What do you see? What do these base metrics represent?
+Now try restarting the server (`control c` will stop it) and go to `localhost:8001/metrics`. What do you see? What do you see if you visit `localhost:8001/treecounter` a few times and then go back to the `/metrics` endpoint? What do these base metrics represent?
 
 ---
 
@@ -47,7 +47,7 @@ Now try restart the server (`control c` will stop it) and go to `localhost:8001/
 
 ---
 
-Now we are able to expose metrics we need to be able to create them. Prometheus has a few different data types, but the simplest is a `Counter` - this is a counter which always goes up, and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instanstiate it.
+Now that we can expose metrics, we need to create them. Prometheus has a few different data types but the simplest is a `Counter` - this is a counter which always goes up, and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instanstiate it.
 
 ``` python
 from prometheus_client import Counter
