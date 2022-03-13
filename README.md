@@ -36,7 +36,7 @@ For this section, you can use the follow command to install depencies and run th
 make dev
 ```
 
-To export our metrics we will need to have a server with a handler to handle the metrics. We can do this by changing the base class of our HTTPRequestHandler to the `MetricsHandler` provided by the prometheus python client. We also need to add the condition for the `/metrics` endpoint below our `/treecounter` endpoint condition. *(Don't forget to import the `MetricsHandler` from the `prometheus_client`)*
+To export our metrics we will need to have a server with a handler to *handle* the metrics. We can do this by changing the base class of our HTTPRequestHandler to the `MetricsHandler` provided by the prometheus python client. We also need to add the condition for the `/metrics` endpoint below our `/treecounter` endpoint condition. *(Don't forget to import the `MetricsHandler` from the `prometheus_client`)*
 
 ``` python
 class HTTPRequestHandler(MetricsHandler):
@@ -46,7 +46,7 @@ class HTTPRequestHandler(MetricsHandler):
         return super(HTTPRequestHandler, self).do_GET()
 ```
 
-Now try restart the server (`control c` will stop it) and go to `localhost:8001/metrics` what do you see? What do you see if you visit `localhost:8001/treecounter` a few times and then go back to the `/metrics` endpoint? What do you see? What do these base metrics represent?
+Now try restarting the server (`control c` will stop it) and go to `localhost:8001/metrics`. What do you see? What do you see if you visit `localhost:8001/treecounter` a few times and then go back to the `/metrics` endpoint? What do these base metrics represent?
 
 ---
 
@@ -226,3 +226,7 @@ request_latency_seconds_sum{endpoint="/treecounter"} 1.13912788000016
 ```
 
 To learn more, you can read about [Prometheus Histogram best practices](https://prometheus.io/docs/practices/histograms/).
+
+---
+
+The latest version of this material has been developed by @vinesse @sleepypioneer with previous iterations supported by @emilywoods @jasongwartz.
