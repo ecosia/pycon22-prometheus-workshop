@@ -208,3 +208,7 @@ request_latency_seconds_sum{endpoint="/treecounter"} 1.13912788000016
 ```
 
 To learn more, you can read about [Prometheus Histogram best practices](https://prometheus.io/docs/practices/histograms/).
+
+---
+
+The latest version of this material has been developed by @vinesse @sleepypioneer with previous iterations supported by @emilywoods @jasongwartz.
