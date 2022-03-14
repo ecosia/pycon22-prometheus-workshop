@@ -54,7 +54,7 @@ Now try restarting the server (`control c` will stop it) and go to `localhost:80
 
 ---
 
-Now that we are able to expose metrics we want to also be able to create them. Prometheus has a few different data types, but the most straight forward is a `Counter` - this is a counter which always goes up, and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instantiate it.
+Now that we can expose metrics, we need to create them. Prometheus has a few different data types, but the most straight forward is a `Counter` - this is a counter which always goes up, and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instantiate it.
 
 ``` python
 from prometheus_client import Counter
