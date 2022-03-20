@@ -3,7 +3,7 @@ from string import Template
 import time
 import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from prometheus_client import MetricsHandler
+from prometheus_client import MetricsHandler, Counter
 from util import artificial_503, artificial_latency
 
 
@@ -11,6 +11,8 @@ HOST_NAME = "0.0.0.0"  # This will map to available port in docker
 PORT_NUMBER = 8001
 
 trees_api_url = "https://api.ecosia.org/v1/trees/count"
+requestCounter = Counter('requests_total', 'total number of requests', ['status', 'endpoint'])
+# requestCounter.labels(status='200', endpoint='/treecounter').inc()
 
 with open("./templates/treeCounter.html", "r") as f:
     html_string = f.read()
