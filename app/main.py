@@ -3,6 +3,7 @@ from string import Template
 import time
 import random
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from prometheus_client import MetricsHandler
 from util import artificial_503, artificial_latency
 
 
@@ -23,7 +24,7 @@ def fetch_tree_count():
     return 0
 
 
-class HTTPRequestHandler(BaseHTTPRequestHandler):
+class HTTPRequestHandler(MetricsHandler):
     @artificial_latency
     def get_treecounter(self):
         self.do_HEAD()
@@ -40,6 +41,8 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         endpoint = self.path
         if endpoint == "/treecounter":
             return self.get_treecounter()
+        elif endpoint == '/metrics':
+            return super(HTTPRequestHandler, self).do_GET()
         else:
             self.send_error(404)
 
