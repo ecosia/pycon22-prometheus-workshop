@@ -98,7 +98,7 @@ To build the application Docker image and start the application container as wel
 docker-compose up --build
 ```
 
-*If you see errors it may be because you still have the previous version of the application running and might be using the same port as you are now trying to access with Docker.*
+*If you see errors it may be because you still have the previous version of the application running and therefore might be using the same port as you are now trying to access with Docker.*
 
 You should then be able to access the Prometheus dashboard on `http://localhost:9090`
 
