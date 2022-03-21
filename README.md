@@ -3,7 +3,7 @@
 
 ### Objective
 
-In the directory `app/`, we have a application that runs a Python web server, with the endpoint `/treecounter`. It displays the total number of trees planted by Ecosia users. We want to start observing the behavior of this application at runtime, by tracking and exporting metric data.
+In the directory `app/`, we have an application that runs a Python web server with the endpoint `/treecounter`. It displays the total number of trees planted by Ecosia users. We want to start observing the behavior of this application at runtime by tracking and exporting metric data.
 
 We will do this using the time-series database system [Prometheus](https://prometheus.io), which uses a "pull" method to extract data from running applications. This means that the applications need to "export" their data, so that Prometheus is able to "scrape" the metric data from them. This is typically done via an HTTP endpoint (`/metrics`, by convention).
 
@@ -18,7 +18,7 @@ We will use the [Prometheus Python client library](https://github.com/prometheus
 
 ### Prerequisites
 
-For this workshop you will need [Python 3](https://installpython3.com/), [Poetry](https://python-poetry.org/docs/#installation), [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) running on your machine. *(on mac os docker-compose is by default installed with Docker)*
+For this workshop you will need [Python 3](https://installpython3.com/), [Poetry](https://python-poetry.org/docs/#installation), [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) running on your machine. *(on mac os docker-compose is installed by default with Docker)*
 
 ## Workshop Content
 
@@ -28,11 +28,11 @@ For this workshop you will need [Python 3](https://installpython3.com/), [Poetry
 
 ---
 
-For this section, you can use the follow command to install depencies and run the dev server locally.
+For this section, you can use the following command to install depencies and run the dev server locally.
 
 ```sh
-# the Makefile allows us to run commands behind a target name
-# Make is not available on for the Windows OS so you will need to copy the commands from the Makefile and run them directly
+# The Makefile allows us to run commands behind a target name
+# Make is not available for the Windows OS so you will need to copy the commands from the Makefile and run them directly
 make dev
 ```
 
@@ -54,7 +54,7 @@ Now try restarting the server (`control c` will stop it) and go to `localhost:80
 
 ---
 
-Now that we can expose metrics, we need to create them. Prometheus has a few different data types, but the most straight forward is a `Counter` - this is a counter which always goes up, and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instantiate it.
+Now that we can expose metrics, we need to create them. Prometheus has a few different data types but the most straight forward is a `Counter`. Counters always increment and can be used to track, for example, the number of requests received (you can then divide this unit over time to calculate requests per second). To create a `Counter`, import it from the Prometheus Python client and instantiate it.
 
 ``` python
 from prometheus_client import Counter
@@ -86,19 +86,19 @@ Add the call to `inc()` in your code. Try experiment with the placement of where
 
 ---
 
-So far, we've been able to instrument our application, such that it is now exporting metrics about its runtime behavior. However, we still need to collect those metrics and store the data in a way that we can query it back out, in order to graph it over time and make dashboards.
+So far we've been able to instrument our application, such that it is now exporting metrics about its runtime behavior. However, we still need to collect those metrics and store the data in a way so we can query it back out in order to graph it over time and make dashboards.
 
-There is a `prometheus.yaml` configuration file here in the repo, which is already set up to scrape metrics from our application. We can run both our application, Prometheus, and Grafana inside Docker, so that they are easily able to find each other.
+There is a `prometheus.yaml` configuration file here in the repo, which is already set up to scrape metrics from our application. We will run our application, Prometheus, and Grafana inside Docker, so that they are easily able to find each other.
 
 #### Run the application, Prometheus and Grafana in Docker
 
-To build the application Docker image, and start the application container, Prometheus and Grafana together, run the following command (from the root of this repo):
+To build the application Docker image and start the application container as well as Prometheus and Grafana together, run the following command (from the root of this repo):
 
 ``` sh
 docker-compose up --build
 ```
 
-*If you see errors it may be because you still have the previous version of the application running, and using the same port as you are now trying to access with Docker.*
+*If you see errors it may be because you still have the previous version of the application running and therefore might be using the same port as you are now trying to access with Docker.*
 
 You should then be able to access the Prometheus dashboard on `http://localhost:9090`
 

@@ -2,4 +2,4 @@ deps:
 	poetry install
 
 dev: deps
-	cd app && poetry run python app/main.py
+	cd app && poetry run python main.py
