@@ -18,7 +18,7 @@ We will use the [Prometheus Python client library](https://github.com/prometheus
 
 ### Prerequisites
 
-For this workshop you will need [Python 3](https://installpython3.com/), [Poetry](https://python-poetry.org/docs/#installation), [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) running on your machine. *(on mac os docker-compose is by default installed with Docker)*
+For this workshop you will need [Python 3.10](https://installpython3.com/), [Poetry](https://python-poetry.org/docs/#installation), [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) running on your machine. *(on mac os docker-compose is by default installed with Docker)*
 
 ## Workshop Content
 
