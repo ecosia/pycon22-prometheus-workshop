@@ -2,7 +2,7 @@ import requests
 from string import Template
 import time
 import random
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer
 from prometheus_client import MetricsHandler
 from util import artificial_503, artificial_latency
 
