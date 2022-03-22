@@ -5,7 +5,7 @@ description = ""
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "3.10.1"
+python = "^3.10"
 prometheus-client = "^0.13.1"
 pytest = "^7.0.1"
 pytest-httpserver = "^1.0.4"
