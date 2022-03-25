@@ -12,7 +12,6 @@ PORT_NUMBER = 8001
 
 trees_api_url = "https://api.ecosia.org/v1/trees/count"
 requestCounter = Counter('requests_total', 'total number of requests', ['status', 'endpoint'])
-# requestCounter.labels(status='200', endpoint='/treecounter').inc()
 
 with open("./templates/treeCounter.html", "r") as f:
     html_string = f.read()
@@ -21,6 +20,7 @@ html_template = Template(html_string)
 
 def fetch_tree_count():
     r = requests.get(trees_api_url) if random.random() > 0.15 else artificial_503()
+    requestCounter.labels(status=r.status_code, endpoint='/upstream').inc()
     if r.status_code == 200:
         return r.json()["count"]
     return 0
@@ -32,6 +32,7 @@ class HTTPRequestHandler(MetricsHandler):
         self.do_HEAD()
         tree_count = fetch_tree_count()
         bytes_template = bytes(html_template.substitute(counter=tree_count), "utf-8")
+        requestCounter.labels(status='200', endpoint='/treecounter').inc()
         self.wfile.write(bytes_template)
 
     def do_HEAD(self):
