@@ -20,6 +20,9 @@ We will use the [Prometheus Python client library](https://github.com/prometheus
 
 For this workshop you will need [Python 3.10](https://installpython3.com/), [Poetry](https://python-poetry.org/docs/#installation), [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) running on your machine. *(on mac os docker-compose is by default installed with Docker)*
 
+
+Please note that this repository is linted using [black](), [flake8]() and [pycodestyle]() with a max line length of 100. This linting is enforced with github actions configured [here](./github/workflow/lint.yml)
+
 ## Workshop Content
 
 ---
@@ -226,6 +229,14 @@ request_latency_seconds_sum{endpoint="/treecounter"} 1.13912788000016
 ```
 
 To learn more, you can read about [Prometheus Histogram best practices](https://prometheus.io/docs/practices/histograms/).
+
+---
+
+## Troubleshooting
+
+### Python version
+
+If the App will not start locally or you can not create the poetry environment it may be because you do not have a suitable version of Python available on your machine (this should be 3.10 or above)
 
 ---
 
