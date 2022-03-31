@@ -234,6 +234,16 @@ To learn more, you can read about [Prometheus Histogram best practices](https://
 
 ## Troubleshooting
 
+### Port conflict
+
+If you see the error message below it is likely because you already have either the Docker version or non docker version of the application already running.
+
+```
+Error starting userland proxy: listen tcp4 0.0.0.0:8001: bind: address already in use
+```
+
+Check you terminal windows to see if you can find where it is running and use `ctrl c` to stop it. Alternatively you can use `lsof -i :8001` to find out the `pid` of the process running at this port and `kill <pid-number>` to stop it. You may have to run these commands as `sudo`.
+
 ### Python version
 
 If the App will not start locally or you can not create the poetry environment it may be because you do not have a suitable version of Python available on your machine (this should be 3.10 or above)
