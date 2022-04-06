@@ -246,7 +246,7 @@ Check you terminal windows to see if you can find where it is running and use `c
 
 ### Python version
 
-If the App will not start locally or you can not create the poetry environment it may be because you do not have a suitable version of Python available on your machine (this should be 3.10 or above)
+If the App will not start locally and you receive an error referring the version, it may be because you do not have a suitable version of Python available on your machine. The version should be 3.10 or above.
 
 ---
 
