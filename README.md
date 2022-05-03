@@ -1,6 +1,8 @@
 # Workshop: We know what your app did last summer. Do you? 👀
 ## Observing Python Applications with Prometheus 🔥🐍  
 
+⚠️ ***This repository was created for the 2022 PyCon DE, please note that the content may not be representive of Ecosia's current engineering standards.***
+
 ### Objective
 
 In the directory `app/`, we have an application that runs a Python web server with the endpoint `/treecounter`. It displays the total number of trees planted by Ecosia users. We want to start observing the behavior of this application at runtime by tracking and exporting metric data.
