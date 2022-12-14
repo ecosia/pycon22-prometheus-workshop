@@ -11,7 +11,7 @@ PORT_NUMBER = 8001
 
 trees_api_url = "https://api.ecosia.org/v1/trees/count"
 
-with open("./templates/treeCounter.html", "r", encoding='utf-8') as f:
+with open("./templates/treeCounter.html", "r", encoding="utf-8") as f:
     html_string = f.read()
 html_template = Template(html_string)
 
